@@ -1,6 +1,29 @@
+"! <p class="shorttext synchronized" lang="en">Data utility tools, compatible with NW versions &lt; 7.4.</p>
+"! <p>For the same functionality with more expression-style code (NW 7.4 and later), go to class ZCL_DATA_TOOL.</p>
 CLASS zcl_data_tool_pre74 DEFINITION PUBLIC FINAL CREATE PUBLIC.
   PUBLIC SECTION.
     CLASS-METHODS:
+      "! <p class="shorttext synchronized" lang="en">Converts an internal table to a range.</p>
+      "! <ul>Features:
+      "! <li>supports non- and structured line type</li>
+      "! <li>works for elementary types (or DDIC types based on): p, c, n, d, t, f, i, int8, string, decfloat16, decfloat34</li>
+      "! </ul>
+      "! <p>Usage:</p>
+      "! <p>The internal table has to be provided as data reference and the final range is returned as reference too.
+      "! If the table is non-structured, <em>i_low_fieldname</em> and <em>i_high_fieldname</em> are not relevant.
+      "! If the table is structured, at least one field name of the structure has to be provided.</p>
+      "! <p>Examples: see the local test class <em>lcl_test</em>.</p>
+      "!
+      "! @parameter i_table | <p class="shorttext synchronized" lang="en">A data reference to the internal table</p>
+      "! @parameter i_low_fieldname | <p class="shorttext synchronized" lang="en">Field name in the structure for LOW range field values</p>
+      "! <p>Relevant if the line type of the internal table; the name of the structure field used for getting
+      "! values for LOW range component</p>
+      "! @parameter i_high_fieldname | <p class="shorttext synchronized" lang="en">Field name in the structure for HIGH range field values</p>
+      "! <p>Relevant if the line type of the internal table; the name of the structure field used for getting
+      "! values for HIGH range component</p>
+      "! @parameter i_sign | <p class="shorttext synchronized" lang="en">SIGN field value in the created range</p>
+      "! @parameter i_option | <p class="shorttext synchronized" lang="en">OPTION field value in the created range</p>
+      "! @parameter r_range | <p class="shorttext synchronized" lang="en">A data reference to the created range</p>
       internal_table_to_range IMPORTING i_table          TYPE REF TO data
                                         i_low_fieldname  TYPE string OPTIONAL
                                         i_high_fieldname TYPE string OPTIONAL
@@ -199,7 +222,9 @@ CLASS zcl_data_tool_pre74 IMPLEMENTATION.
     LOOP AT <source_table> ASSIGNING <source_line>.
       CASE value_data_details-line_type.
         WHEN c_line_type-structure.
-          ASSIGN COMPONENT i_low_fieldname OF STRUCTURE <source_line> TO <value>.
+          IF i_low_fieldname IS NOT INITIAL.
+            ASSIGN COMPONENT i_low_fieldname OF STRUCTURE <source_line> TO <value>.
+          ENDIF.
 
           IF i_high_fieldname IS NOT INITIAL.
             ASSIGN COMPONENT i_high_fieldname OF STRUCTURE <source_line> TO <value_high>.
@@ -213,10 +238,13 @@ CLASS zcl_data_tool_pre74 IMPLEMENTATION.
       <sign> = i_sign.
       ASSIGN COMPONENT 'OPTION' OF STRUCTURE <range_line> TO <option>.
       <option> = i_option.
-      ASSIGN COMPONENT 'LOW' OF STRUCTURE <range_line> TO <low>.
-      <low> = <value>.
 
-      IF i_high_fieldname IS NOT INITIAL.
+      IF <value> IS ASSIGNED.
+        ASSIGN COMPONENT 'LOW' OF STRUCTURE <range_line> TO <low>.
+        <low> = <value>.
+      ENDIF.
+
+      IF <value_high> IS ASSIGNED.
         ASSIGN COMPONENT 'HIGH' OF STRUCTURE <range_line> TO <high>.
         <high> = <value_high>.
       ENDIF.

@@ -5,13 +5,21 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_DATA_TOOL_PRE74</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>Data utility</DESCRIPT>
+    <DESCRIPT>Data utility tools, compatible with NW versions &lt; 7.4.</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>
     <UNICODE>X</UNICODE>
     <WITH_UNIT_TESTS>X</WITH_UNIT_TESTS>
    </VSEOCLASS>
+   <DESCRIPTIONS>
+    <SEOCOMPOTX>
+     <CLSNAME>ZCL_DATA_TOOL_PRE74</CLSNAME>
+     <CMPNAME>INTERNAL_TABLE_TO_RANGE</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Converts an internal table to a range.</DESCRIPT>
+    </SEOCOMPOTX>
+   </DESCRIPTIONS>
   </asx:values>
  </asx:abap>
 </abapGit>

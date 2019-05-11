@@ -22,6 +22,7 @@ CLASS lcl_test DEFINITION FOR TESTING RISK LEVEL HARMLESS DURATION SHORT FINAL.
       ddic_table_to_range FOR TESTING,
       struc_table_to_range FOR TESTING,
       struc_w_high_table_to_range FOR TESTING,
+      struc_only_high_table_to_range FOR TESTING,
       raise_struc_missing_exc FOR TESTING.
 ENDCLASS.
 
@@ -482,4 +483,44 @@ CLASS lcl_test IMPLEMENTATION.
     cl_abap_unit_assert=>assert_equals( act = <fs_actual_range> exp = expected_range ).
   ENDMETHOD.
 
+  METHOD struc_only_high_table_to_range.
+    DATA: struc_table         TYPE STANDARD TABLE OF ty_data,
+          struc               TYPE ty_data,
+          ref_table           TYPE REF TO data,
+          ref_range           TYPE REF TO data,
+          expected_range      TYPE RANGE OF nrreturn_dec,
+          expected_range_line LIKE LINE OF expected_range.
+
+    FIELD-SYMBOLS: <fs_actual_range> LIKE expected_range.
+
+    struc-number = 1.
+    struc-name = 'abc'.
+    struc-value = '20'.
+    struc-other_value = '200'.
+    APPEND struc TO struc_table.
+    struc-number = 2.
+    struc-name = 'cba'.
+    struc-value = '40'.
+    struc-other_value = '400'.
+    APPEND struc TO struc_table.
+
+    expected_range_line-sign = 'I'.
+    expected_range_line-option = 'BT'.
+    expected_range_line-high = '200'.
+    APPEND expected_range_line TO expected_range.
+    expected_range_line-high = '400'.
+    APPEND expected_range_line TO expected_range.
+
+    GET REFERENCE OF struc_table INTO ref_table.
+
+    ref_range = zcl_data_tool_pre74=>internal_table_to_range(
+      i_table = ref_table
+      i_high_fieldname = 'OTHER_VALUE'
+      i_sign = 'I'
+      i_option = 'BT'
+    ).
+
+    ASSIGN ref_range->* TO <fs_actual_range>.
+    cl_abap_unit_assert=>assert_equals( act = <fs_actual_range> exp = expected_range ).
+  ENDMETHOD.
 ENDCLASS.
