@@ -5,7 +5,7 @@ Various ABAP utilities.
 ### ZCL_DATA_TOOL and ZCL_DATA_TOOL_PRE74
 Both classes deliver the same functionality, but the former is for NW system version > 7.4 and has more expression-style usage, while the latter is dedicated for NW system version < 7.4. 
 #### Methods:
-##### internal_table_to_range
+##### convert_int_table_to_range
 Converts an internal table to a range.  
 Features:
 - supports non- and structured line type
