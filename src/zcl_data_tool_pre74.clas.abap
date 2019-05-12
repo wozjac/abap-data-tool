@@ -1,6 +1,7 @@
 "! <p class="shorttext synchronized" lang="en">Data utility tools, compatible with NW versions &lt; 7.4.</p>
 "! <p>For the same functionality with more expression-style code (NW 7.4 and later), go to class ZCL_DATA_TOOL.</p>
-CLASS zcl_data_tool_pre74 DEFINITION PUBLIC FINAL CREATE PUBLIC.
+"! <p>All errors are thrown as pure <em>lcx_data_tool_exception</em> exception (superclass CX_NO_CHECK), adjust this as needed</p>
+CLASS zcl_data_tool_pre74 DEFINITION PUBLIC CREATE PUBLIC.
   PUBLIC SECTION.
     CLASS-METHODS:
       "! <p class="shorttext synchronized" lang="en">Converts an internal table to a range.</p>
@@ -15,21 +16,28 @@ CLASS zcl_data_tool_pre74 DEFINITION PUBLIC FINAL CREATE PUBLIC.
       "! <p>Examples: see the local test class <em>lcl_test</em>.</p>
       "!
       "! @parameter i_table | <p class="shorttext synchronized" lang="en">A data reference to the internal table</p>
-      "! @parameter i_low_fieldname | <p class="shorttext synchronized" lang="en">Field name in the structure for LOW range field values</p>
+      "! @parameter i_low_fieldname | <p class="shorttext synchronized" lang="en">Field name in the structure for
+      "! LOW range field values</p>
       "! <p>Relevant if the line type of the internal table; the name of the structure field used for getting
       "! values for LOW range component</p>
-      "! @parameter i_high_fieldname | <p class="shorttext synchronized" lang="en">Field name in the structure for HIGH range field values</p>
+      "! @parameter i_high_fieldname | <p class="shorttext synchronized" lang="en">Field name in the structure for
+      "! HIGH range field values</p>
       "! <p>Relevant if the line type of the internal table; the name of the structure field used for getting
       "! values for HIGH range component</p>
       "! @parameter i_sign | <p class="shorttext synchronized" lang="en">SIGN field value in the created range</p>
       "! @parameter i_option | <p class="shorttext synchronized" lang="en">OPTION field value in the created range</p>
       "! @parameter r_range | <p class="shorttext synchronized" lang="en">A data reference to the created range</p>
-      internal_table_to_range IMPORTING i_table          TYPE REF TO data
-                                        i_low_fieldname  TYPE string OPTIONAL
-                                        i_high_fieldname TYPE string OPTIONAL
-                                        i_sign           TYPE char1 DEFAULT 'I'
-                                        i_option         TYPE char2 DEFAULT 'EQ'
-                              RETURNING VALUE(r_range)   TYPE REF TO data.
+      convert_int_table_to_range IMPORTING i_table          TYPE REF TO data
+                                           i_low_fieldname  TYPE string OPTIONAL
+                                           i_high_fieldname TYPE string OPTIONAL
+                                           i_sign           TYPE char1 DEFAULT 'I'
+                                           i_option         TYPE char2 DEFAULT 'EQ'
+                                 RETURNING VALUE(r_range)   TYPE REF TO data,
+      convert_domain_to_range IMPORTING i_sign             TYPE char1 DEFAULT 'I'
+                                        i_option           TYPE char2 DEFAULT 'EQ'
+                                        i_domain_name      TYPE domname OPTIONAL
+                                        i_domain_reference TYPE REF TO data OPTIONAL
+                              RETURNING VALUE(r_range)     TYPE REF TO data.
   PRIVATE SECTION.
     CONSTANTS:
       BEGIN OF c_line_type,
@@ -38,16 +46,18 @@ CLASS zcl_data_tool_pre74 DEFINITION PUBLIC FINAL CREATE PUBLIC.
       END OF c_line_type.
 
     CLASS-METHODS:
-      create_low_high_components IMPORTING i_range_value_details TYPE ty_data_details
+      create_low_high_components IMPORTING i_range_value_details TYPE ty_type_details
                                  RETURNING VALUE(r_components)   TYPE abap_component_tab,
-      create_range_components IMPORTING i_range_value_details TYPE ty_data_details
+      create_range_components IMPORTING i_range_value_details TYPE ty_type_details
                               RETURNING VALUE(r_components)   TYPE abap_component_tab,
-      get_value_type_details IMPORTING i_table               TYPE REF TO data
-                                       i_low_fieldname       TYPE string OPTIONAL
-                                       i_high_fieldname      TYPE string OPTIONAL
-                             RETURNING VALUE(r_data_details) TYPE ty_data_details,
+      get_type_details_from_table IMPORTING i_table               TYPE REF TO data
+                                            i_low_fieldname       TYPE string OPTIONAL
+                                            i_high_fieldname      TYPE string OPTIONAL
+                                  RETURNING VALUE(r_type_details) TYPE ty_type_details,
       create_range_table IMPORTING i_structure_description TYPE REF TO cl_abap_structdescr
-                         RETURNING VALUE(r_range_table)    TYPE REF TO data.
+                         RETURNING VALUE(r_range_table)    TYPE REF TO data,
+      get_type_details_from_element IMPORTING i_domain_name         TYPE domname
+                                    RETURNING VALUE(r_type_details) TYPE ty_type_details.
 ENDCLASS.
 
 CLASS zcl_data_tool_pre74 IMPLEMENTATION.
@@ -112,7 +122,6 @@ CLASS zcl_data_tool_pre74 IMPLEMENTATION.
     INSERT LINES OF low_high_components INTO TABLE r_components.
   ENDMETHOD.
 
-
   METHOD create_range_table.
     DATA: table_description TYPE REF TO cl_abap_tabledescr,
           data_description  TYPE REF TO cl_abap_datadescr.
@@ -122,7 +131,93 @@ CLASS zcl_data_tool_pre74 IMPLEMENTATION.
     CREATE DATA r_range_table TYPE HANDLE table_description.
   ENDMETHOD.
 
-  METHOD get_value_type_details.
+  METHOD convert_domain_to_range.
+    DATA: domain_values           TYPE STANDARD TABLE OF dd07v,
+          domain_type_description TYPE dd01v,
+          domain_name             LIKE i_domain_name,
+          relative_name           TYPE string,
+          type_description        TYPE REF TO cl_abap_typedescr,
+          range_line              TYPE REF TO data,
+          components              TYPE abap_component_tab,
+          structure_description   TYPE REF TO cl_abap_structdescr,
+          type_details            TYPE ty_type_details.
+
+    FIELD-SYMBOLS: <domain_value> LIKE LINE OF domain_values,
+                   <range_line>   TYPE any,
+                   <sign>         TYPE any,
+                   <option>       TYPE any,
+                   <low>          TYPE any,
+                   <high>         TYPE any,
+                   <range_table>  TYPE STANDARD TABLE.
+
+    IF i_domain_name IS INITIAL AND i_domain_reference IS INITIAL.
+      RAISE EXCEPTION TYPE lcx_data_tool_exception.
+    ENDIF.
+
+    IF i_domain_reference IS NOT INITIAL.
+      type_description = cl_abap_datadescr=>describe_by_data_ref( p_data_ref = i_domain_reference ).
+      relative_name = type_description->get_relative_name( ).
+      domain_name = relative_name.
+    ELSE.
+      domain_name = i_domain_name.
+    ENDIF.
+
+    CALL FUNCTION 'DDIF_DOMA_GET'
+      EXPORTING
+        name          = domain_name
+        langu         = sy-langu
+      IMPORTING
+        dd01v_wa      = domain_type_description
+      TABLES
+        dd07v_tab     = domain_values
+      EXCEPTIONS
+        illegal_input = 1
+        OTHERS        = 2.
+
+    IF sy-subrc <> 0.
+      RAISE EXCEPTION TYPE lcx_data_tool_exception.
+    ENDIF.
+
+    type_details = get_type_details_from_element( i_domain_name = domain_name ).
+
+    components = create_range_components( i_range_value_details = type_details ).
+    structure_description = cl_abap_structdescr=>create( components ).
+    r_range = create_range_table( i_structure_description = structure_description ).
+    ASSIGN r_range->* TO <range_table>.
+    CREATE DATA range_line TYPE HANDLE structure_description.
+    ASSIGN range_line->* TO <range_line>.
+
+    LOOP AT domain_values ASSIGNING <domain_value>.
+      ASSIGN COMPONENT 'SIGN' OF STRUCTURE <range_line> TO <sign>.
+      <sign> = i_sign.
+      ASSIGN COMPONENT 'OPTION' OF STRUCTURE <range_line> TO <option>.
+      <option> = i_option.
+
+      IF <domain_value>-domvalue_l IS NOT INITIAL.
+        ASSIGN COMPONENT 'LOW' OF STRUCTURE <range_line> TO <low>.
+        <low> = <domain_value>-domvalue_l.
+      ENDIF.
+
+      IF <domain_value>-domvalue_h IS NOT INITIAL.
+        ASSIGN COMPONENT 'HIGH' OF STRUCTURE <range_line> TO <high>.
+        <high> = <domain_value>-domvalue_h.
+      ENDIF.
+
+      APPEND <range_line> TO <range_table>.
+    ENDLOOP.
+  ENDMETHOD.
+
+  METHOD get_type_details_from_element.
+    DATA: element_description TYPE REF TO cl_abap_elemdescr.
+
+    element_description ?= cl_abap_elemdescr=>describe_by_name( EXPORTING p_name = i_domain_name ).
+    r_type_details-kind = element_description->type_kind.
+    r_type_details-length = element_description->length.
+    r_type_details-decimals = element_description->decimals.
+    r_type_details-line_type = c_line_type-element.
+  ENDMETHOD.
+
+  METHOD get_type_details_from_table.
     DATA: is_given_type       TYPE c LENGTH 1,
           table_description   TYPE REF TO cl_abap_tabledescr,
           data_description    TYPE REF TO cl_abap_datadescr,
@@ -165,11 +260,11 @@ CLASS zcl_data_tool_pre74 IMPLEMENTATION.
         RAISE EXCEPTION TYPE lcx_data_tool_exception.
       ENDIF.
 
-      r_data_details-length = <fs_itab_component>-length.
-      r_data_details-kind = <fs_itab_component>-type_kind.
-      r_data_details-length = <fs_itab_component>-length.
-      r_data_details-decimals = <fs_itab_component>-decimals.
-      r_data_details-line_type = c_line_type-structure.
+      r_type_details-length = <fs_itab_component>-length.
+      r_type_details-kind = <fs_itab_component>-type_kind.
+      r_type_details-length = <fs_itab_component>-length.
+      r_type_details-decimals = <fs_itab_component>-decimals.
+      r_type_details-line_type = c_line_type-structure.
     ENDIF.
 
     is_given_type = cl_lcr_util=>instanceof(
@@ -179,19 +274,19 @@ CLASS zcl_data_tool_pre74 IMPLEMENTATION.
 
     IF is_given_type = abap_true.
       element_description ?= data_description.
-      r_data_details-kind = element_description->type_kind.
-      r_data_details-length = element_description->length.
-      r_data_details-decimals = element_description->decimals.
-      r_data_details-line_type = c_line_type-element.
+      r_type_details-kind = element_description->type_kind.
+      r_type_details-length = element_description->length.
+      r_type_details-decimals = element_description->decimals.
+      r_type_details-line_type = c_line_type-element.
     ENDIF.
   ENDMETHOD.
 
-  METHOD internal_table_to_range.
+  METHOD convert_int_table_to_range.
     DATA:
       structure_description TYPE REF TO cl_abap_structdescr,
       components            TYPE abap_component_tab,
       range_line            TYPE REF TO data,
-      value_data_details    TYPE ty_data_details.
+      value_data_details    TYPE ty_type_details.
 
     FIELD-SYMBOLS: <range_line>   TYPE any,
                    <sign>         TYPE any,
@@ -204,7 +299,7 @@ CLASS zcl_data_tool_pre74 IMPLEMENTATION.
                    <value_high>   TYPE any,
                    <range_table>  TYPE STANDARD TABLE.
 
-    value_data_details = get_value_type_details(
+    value_data_details = get_type_details_from_table(
         i_table = i_table
         i_low_fieldname = i_low_fieldname
         i_high_fieldname = i_high_fieldname

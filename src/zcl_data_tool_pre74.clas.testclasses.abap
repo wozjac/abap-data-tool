@@ -50,7 +50,7 @@ CLASS lcl_test IMPLEMENTATION.
     APPEND expected_range_line TO expected_range.
 
     GET REFERENCE OF int_table INTO ref_table.
-    ref_range = zcl_data_tool_pre74=>internal_table_to_range( i_table = ref_table ).
+    ref_range = zcl_data_tool_pre74=>convert_int_table_to_range( i_table = ref_table ).
     ASSIGN ref_range->* TO <fs_actual_range>.
 
     cl_abap_unit_assert=>assert_equals( act = <fs_actual_range> exp = expected_range ).
@@ -79,7 +79,7 @@ CLASS lcl_test IMPLEMENTATION.
     APPEND expected_range_line TO expected_range.
 
     GET REFERENCE OF float_table INTO ref_table.
-    ref_range = zcl_data_tool_pre74=>internal_table_to_range( i_table = ref_table ).
+    ref_range = zcl_data_tool_pre74=>convert_int_table_to_range( i_table = ref_table ).
     ASSIGN ref_range->* TO <fs_actual_range>.
 
     cl_abap_unit_assert=>assert_equals( act = <fs_actual_range> exp = expected_range ).
@@ -108,7 +108,7 @@ CLASS lcl_test IMPLEMENTATION.
     APPEND expected_range_line TO expected_range.
 
     GET REFERENCE OF float_table INTO ref_table.
-    ref_range = zcl_data_tool_pre74=>internal_table_to_range( i_table = ref_table ).
+    ref_range = zcl_data_tool_pre74=>convert_int_table_to_range( i_table = ref_table ).
     ASSIGN ref_range->* TO <fs_actual_range>.
 
     cl_abap_unit_assert=>assert_equals( act = <fs_actual_range> exp = expected_range ).
@@ -138,7 +138,7 @@ CLASS lcl_test IMPLEMENTATION.
     APPEND expected_range_line TO expected_range.
 
     GET REFERENCE OF char_table INTO ref_table.
-    ref_range = zcl_data_tool_pre74=>internal_table_to_range( i_table = ref_table i_sign = 'E' ).
+    ref_range = zcl_data_tool_pre74=>convert_int_table_to_range( i_table = ref_table i_sign = 'E' ).
     ASSIGN ref_range->* TO <fs_actual_range>.
 
     cl_abap_unit_assert=>assert_equals( act = <fs_actual_range> exp = expected_range ).
@@ -167,7 +167,7 @@ CLASS lcl_test IMPLEMENTATION.
     APPEND expected_range_line TO expected_range.
 
     GET REFERENCE OF float_table INTO ref_table.
-    ref_range = zcl_data_tool_pre74=>internal_table_to_range( i_table = ref_table ).
+    ref_range = zcl_data_tool_pre74=>convert_int_table_to_range( i_table = ref_table ).
     ASSIGN ref_range->* TO <fs_actual_range>.
 
     cl_abap_unit_assert=>assert_equals( act = <fs_actual_range> exp = expected_range ).
@@ -198,7 +198,7 @@ CLASS lcl_test IMPLEMENTATION.
     APPEND expected_range_line TO expected_range.
 
     GET REFERENCE OF packed_table INTO ref_table.
-    ref_range = zcl_data_tool_pre74=>internal_table_to_range( i_table = ref_table ).
+    ref_range = zcl_data_tool_pre74=>convert_int_table_to_range( i_table = ref_table ).
     ASSIGN ref_range->* TO <fs_actual_range>.
 
     cl_abap_unit_assert=>assert_equals( act = <fs_actual_range> exp = expected_range ).
@@ -227,7 +227,7 @@ CLASS lcl_test IMPLEMENTATION.
     APPEND expected_range_line TO expected_range.
 
     GET REFERENCE OF string_table INTO ref_table.
-    ref_range = zcl_data_tool_pre74=>internal_table_to_range( i_table = ref_table i_option = 'NE' ).
+    ref_range = zcl_data_tool_pre74=>convert_int_table_to_range( i_table = ref_table i_option = 'NE' ).
     ASSIGN ref_range->* TO <fs_actual_range>.
 
     cl_abap_unit_assert=>assert_equals( act = <fs_actual_range> exp = expected_range ).
@@ -257,7 +257,7 @@ CLASS lcl_test IMPLEMENTATION.
     APPEND expected_range_line TO expected_range.
 
     GET REFERENCE OF num_table INTO ref_table.
-    ref_range = zcl_data_tool_pre74=>internal_table_to_range( i_table = ref_table i_sign = 'E' ).
+    ref_range = zcl_data_tool_pre74=>convert_int_table_to_range( i_table = ref_table i_sign = 'E' ).
     ASSIGN ref_range->* TO <fs_actual_range>.
 
     cl_abap_unit_assert=>assert_equals( act = <fs_actual_range> exp = expected_range ).
@@ -286,7 +286,7 @@ CLASS lcl_test IMPLEMENTATION.
     APPEND expected_range_line TO expected_range.
 
     GET REFERENCE OF int_table INTO ref_table.
-    ref_range = zcl_data_tool_pre74=>internal_table_to_range( i_table = ref_table ).
+    ref_range = zcl_data_tool_pre74=>convert_int_table_to_range( i_table = ref_table ).
     ASSIGN ref_range->* TO <fs_actual_range>.
 
     cl_abap_unit_assert=>assert_equals( act = <fs_actual_range> exp = expected_range ).
@@ -315,7 +315,7 @@ CLASS lcl_test IMPLEMENTATION.
     APPEND expected_range_line TO expected_range.
 
     GET REFERENCE OF date_table INTO ref_table.
-    ref_range = zcl_data_tool_pre74=>internal_table_to_range( i_table = ref_table ).
+    ref_range = zcl_data_tool_pre74=>convert_int_table_to_range( i_table = ref_table ).
     ASSIGN ref_range->* TO <fs_actual_range>.
 
     cl_abap_unit_assert=>assert_equals( act = <fs_actual_range> exp = expected_range ).
@@ -344,7 +344,7 @@ CLASS lcl_test IMPLEMENTATION.
     APPEND expected_range_line TO expected_range.
 
     GET REFERENCE OF time_table INTO ref_table.
-    ref_range = zcl_data_tool_pre74=>internal_table_to_range( i_table = ref_table ).
+    ref_range = zcl_data_tool_pre74=>convert_int_table_to_range( i_table = ref_table ).
     ASSIGN ref_range->* TO <fs_actual_range>.
 
     cl_abap_unit_assert=>assert_equals( act = <fs_actual_range> exp = expected_range ).
@@ -373,7 +373,7 @@ CLASS lcl_test IMPLEMENTATION.
     APPEND expected_range_line TO expected_range.
 
     GET REFERENCE OF bapibp_curr_table INTO ref_table.
-    ref_range = zcl_data_tool_pre74=>internal_table_to_range( i_table = ref_table ).
+    ref_range = zcl_data_tool_pre74=>convert_int_table_to_range( i_table = ref_table ).
     ASSIGN ref_range->* TO <fs_actual_range>.
 
     cl_abap_unit_assert=>assert_equals( act = <fs_actual_range> exp = expected_range ).
@@ -412,7 +412,7 @@ CLASS lcl_test IMPLEMENTATION.
     APPEND expected_range_line TO expected_range.
 
     GET REFERENCE OF struc_table INTO ref_table.
-    ref_range = zcl_data_tool_pre74=>internal_table_to_range( i_table = ref_table i_low_fieldname = 'VALUE' i_sign = 'E' ).
+    ref_range = zcl_data_tool_pre74=>convert_int_table_to_range( i_table = ref_table i_low_fieldname = 'VALUE' i_sign = 'E' ).
     ASSIGN ref_range->* TO <fs_actual_range>.
 
     cl_abap_unit_assert=>assert_equals( act = <fs_actual_range> exp = expected_range ).
@@ -432,7 +432,7 @@ CLASS lcl_test IMPLEMENTATION.
     GET REFERENCE OF struc_table INTO ref_table.
 
     TRY.
-        zcl_data_tool_pre74=>internal_table_to_range( i_table = ref_table i_sign = 'E' ).
+        zcl_data_tool_pre74=>convert_int_table_to_range( i_table = ref_table i_sign = 'E' ).
       CATCH lcx_data_tool_exception INTO exception.
     ENDTRY.
 
@@ -471,7 +471,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     GET REFERENCE OF struc_table INTO ref_table.
 
-    ref_range = zcl_data_tool_pre74=>internal_table_to_range(
+    ref_range = zcl_data_tool_pre74=>convert_int_table_to_range(
       i_table = ref_table
       i_low_fieldname = 'VALUE'
       i_high_fieldname = 'OTHER_VALUE'
@@ -513,7 +513,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     GET REFERENCE OF struc_table INTO ref_table.
 
-    ref_range = zcl_data_tool_pre74=>internal_table_to_range(
+    ref_range = zcl_data_tool_pre74=>convert_int_table_to_range(
       i_table = ref_table
       i_high_fieldname = 'OTHER_VALUE'
       i_sign = 'I'
