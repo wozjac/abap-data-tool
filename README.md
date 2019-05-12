@@ -14,7 +14,7 @@ Features:
 Usage:  
 The internal table has to be provided as data reference and the final range is returned as reference too.
 If the table is non-structured,*i_low_fieldname* and *i_high_fieldname* are not relevant. If the table is structured, at least one field name of the structure has to be provided.  
-Examples: 
+Examples (ZCL_DATA_TOOL_PRE74): 
 * non-structured table
 ```ABAP
 DATA: int_table   TYPE STANDARD TABLE OF i,
