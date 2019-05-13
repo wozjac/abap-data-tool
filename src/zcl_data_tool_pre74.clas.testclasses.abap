@@ -5,7 +5,10 @@ CLASS lcl_test DEFINITION FOR TESTING RISK LEVEL HARMLESS DURATION SHORT FINAL.
              name        TYPE string,
              value       TYPE nrreturn_dec,
              other_value TYPE nrreturn_dec,
-           END OF ty_data.
+           END OF ty_data,
+
+           ty_category_range TYPE RANGE OF cccategory,
+           ty_mandt_range    TYPE RANGE OF mandt.
 
     METHODS:
       int_table_to_range FOR TESTING,
@@ -23,7 +26,17 @@ CLASS lcl_test DEFINITION FOR TESTING RISK LEVEL HARMLESS DURATION SHORT FINAL.
       struc_table_to_range FOR TESTING,
       struc_w_high_table_to_range FOR TESTING,
       struc_only_high_table_to_range FOR TESTING,
-      raise_struc_missing_exc FOR TESTING.
+      raise_struc_missing_exc FOR TESTING,
+      table_domain_name_to_range FOR TESTING,
+      table_domain_ref_to_range FOR TESTING,
+      fixed_domain_name_to_range FOR TESTING,
+      fixed_domain_ref_to_range FOR TESTING,
+      get_category_range IMPORTING i_sign         TYPE char1 DEFAULT 'I'
+                                   i_option       TYPE char2 DEFAULT 'EQ'
+                         RETURNING VALUE(r_range) TYPE ty_category_range,
+      get_mandt_range IMPORTING i_sign         TYPE char1 DEFAULT 'I'
+                                i_option       TYPE char2 DEFAULT 'EQ'
+                      RETURNING VALUE(r_range) TYPE ty_mandt_range.
 ENDCLASS.
 
 CLASS lcl_test IMPLEMENTATION.
@@ -523,4 +536,128 @@ CLASS lcl_test IMPLEMENTATION.
     ASSIGN ref_range->* TO <fs_actual_range>.
     cl_abap_unit_assert=>assert_equals( act = <fs_actual_range> exp = expected_range ).
   ENDMETHOD.
+
+  METHOD fixed_domain_name_to_range.
+    DATA: range          TYPE REF TO data,
+          expected_range TYPE RANGE OF cccategory.
+
+    FIELD-SYMBOLS: <range> TYPE ty_category_range.
+
+    expected_range = get_category_range(
+      i_sign = 'E'
+      i_option = 'GT'
+    ).
+
+    range = zcl_data_tool_pre74=>convert_domain_to_range(
+      i_sign = 'E'
+      i_option = 'GT'
+      i_domain_name = 'CCCATEGORY'
+    ).
+
+    cl_abap_unit_assert=>assert_bound( act = range ).
+    ASSIGN range->* TO <range>.
+
+    SORT expected_range BY low.
+    SORT <range> BY low.
+
+    cl_abap_unit_assert=>assert_equals( act = <range> exp = expected_range ).
+  ENDMETHOD.
+
+  METHOD fixed_domain_ref_to_range.
+    DATA: domain         TYPE cccategory,
+          domain_ref     TYPE REF TO data,
+          range          TYPE REF TO data,
+          expected_range TYPE RANGE OF cccategory.
+
+    FIELD-SYMBOLS: <range> TYPE ty_category_range.
+
+    expected_range = get_category_range(
+      i_sign = 'E'
+      i_option = 'GT'
+    ).
+
+    GET  REFERENCE OF domain INTO domain_ref.
+
+    range = zcl_data_tool_pre74=>convert_domain_to_range(
+      i_sign = 'E'
+      i_option = 'GT'
+      i_domain_reference = domain_ref
+    ).
+
+    cl_abap_unit_assert=>assert_bound( act = range ).
+    ASSIGN range->* TO <range>.
+
+    SORT expected_range BY low.
+    SORT <range> BY low.
+
+    cl_abap_unit_assert=>assert_equals( act = <range> exp = expected_range ).
+  ENDMETHOD.
+
+  METHOD table_domain_ref_to_range.
+    DATA: domain     TYPE mandt,
+          domain_ref TYPE REF TO data,
+          range      TYPE REF TO data.
+
+    FIELD-SYMBOLS: <range> TYPE STANDARD TABLE.
+
+    GET  REFERENCE OF domain INTO domain_ref.
+
+    range = zcl_data_tool_pre74=>convert_domain_to_range(
+      i_sign = 'I'
+      i_option = 'EQ'
+      i_domain_reference = domain_ref
+    ).
+
+    cl_abap_unit_assert=>assert_bound( act = range ).
+    ASSIGN range->* TO <range>.
+
+
+  ENDMETHOD.
+
+  METHOD table_domain_name_to_range.
+    DATA: domain_name TYPE domname VALUE 'MANDT',
+          range       TYPE REF TO data.
+
+    FIELD-SYMBOLS: <range> TYPE STANDARD TABLE.
+
+    range = zcl_data_tool_pre74=>convert_domain_to_range(
+      i_sign = 'I'
+      i_option = 'EQ'
+      i_domain_name = domain_name
+    ).
+
+    cl_abap_unit_assert=>assert_bound( act = range ).
+    ASSIGN range->* TO <range>.
+  ENDMETHOD.
+
+  METHOD get_category_range.
+    DATA: range_line LIKE LINE OF r_range.
+
+    range_line-sign = i_sign.
+    range_line-option = i_option.
+    range_line-low = 'P'.
+    APPEND range_line TO r_range.
+    range_line-low = 'T'.
+    APPEND range_line TO r_range.
+    range_line-low = 'C'.
+    APPEND range_line TO r_range.
+    range_line-low = 'D'.
+    APPEND range_line TO r_range.
+    range_line-low = 'E'.
+    APPEND range_line TO r_range.
+    range_line-low = 'S'.
+    APPEND range_line TO r_range.
+  ENDMETHOD.
+
+  METHOD get_mandt_range.
+    DATA: range_line LIKE LINE OF r_range.
+
+    range_line-sign = i_sign.
+    range_line-option = i_option.
+    range_line-low = '000'.
+    APPEND range_line TO r_range.
+    range_line-low = '001'.
+    APPEND range_line TO r_range.
+  ENDMETHOD.
+
 ENDCLASS.
