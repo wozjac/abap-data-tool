@@ -64,4 +64,18 @@ ref_range = zcl_data_tool_pre74=>internal_table_to_range(
 
 ASSIGN ref_range->* TO <range>.
 ```  
+##### convert_domain_to_range
+Examples (ZCL_DATA_TOOL_PRE74):
+* passing a data object with a domain type
+```ABAP
+```
+* passing domain name
+```ABAP
+DATA: range_reference TYPE REF TO data,
+      clients         TYPE RANGE OF bapimandt.
+FIELD-SYMBOLS: <range> LIKE clients.
+
+range_reference = zcl_data_tool_pre74=>convert_domain_to_range( i_domain_name = 'MANDT' ).
+ASSIGN range_reference->* TO <range>.
+```
 
