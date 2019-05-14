@@ -256,17 +256,17 @@ CLASS lcl_test IMPLEMENTATION.
 
     FIELD-SYMBOLS: <fs_actual_range> LIKE expected_range.
 
-    APPEND 'abc' TO num_table.
-    APPEND 'cba' TO num_table.
-    APPEND 'abc' TO num_table.
+    APPEND '111' TO num_table.
+    APPEND '222' TO num_table.
+    APPEND '333' TO num_table.
 
     expected_range_line-sign = 'E'.
     expected_range_line-option = 'EQ'.
-    expected_range_line-low = 'abc'.
+    expected_range_line-low = '111'.
     APPEND expected_range_line TO expected_range.
-    expected_range_line-low = 'cba'.
+    expected_range_line-low = '222'.
     APPEND expected_range_line TO expected_range.
-    expected_range_line-low = 'abc'.
+    expected_range_line-low = '333'.
     APPEND expected_range_line TO expected_range.
 
     GET REFERENCE OF num_table INTO ref_table.
@@ -632,6 +632,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_bound( act = range ).
     ASSIGN range->* TO <range>.
+    cl_abap_unit_assert=>assert_equals( exp = expected_range act = <range> ).
   ENDMETHOD.
 
   METHOD get_category_range.

@@ -385,7 +385,7 @@ CLASS zcl_data_tool_pre74 IMPLEMENTATION.
     struct_description ?= cl_abap_typedescr=>describe_by_name( p_name = i_table_name ).
     fields = struct_description->get_ddic_field_list( ).
 
-    READ TABLE fields ASSIGNING <field> WITH KEY rollname = i_domain_name.
+    READ TABLE fields ASSIGNING <field> WITH KEY domname = i_domain_name.
 
     IF sy-subrc <> 0.
       RAISE EXCEPTION TYPE lcx_data_tool_exception.
