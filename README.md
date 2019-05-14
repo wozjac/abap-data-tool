@@ -29,7 +29,7 @@ APPEND 2 TO int_table.
 APPEND 3 TO int_table.
 
 GET REFERENCE OF int_table INTO ref_table.
-ref_range = zcl_data_tool_pre74=>internal_table_to_range( i_table = ref_table ).
+ref_range = zcl_data_tool_pre74=>internal_table_to_range( i_table = ref_table ). "default SIGN = I, OPTION = EQ
 ASSIGN ref_range->* to <range>.
 ```  
 * structured table
@@ -68,6 +68,15 @@ ASSIGN ref_range->* TO <range>.
 Examples (ZCL_DATA_TOOL_PRE74):
 * passing a data object with a domain type
 ```ABAP
+DATA: bapiclient      TYPE bapimandt,
+      range_reference TYPE REF TO data,
+      clients         TYPE RANGE OF bapimandt.
+FIELD-SYMBOLS: <range> LIKE clients.
+
+GET REFERENCE OF bapiclient INTO range_reference.
+"default SIGN = I, OPTION = EQ
+range_reference = zcl_data_tool_pre74=>convert_domain_to_range( i_domain_reference = range_reference ). 
+ASSIGN range_reference->* TO <range>.
 ```
 * passing domain name
 ```ABAP
@@ -75,7 +84,7 @@ DATA: range_reference TYPE REF TO data,
       clients         TYPE RANGE OF bapimandt.
 FIELD-SYMBOLS: <range> LIKE clients.
 
-range_reference = zcl_data_tool_pre74=>convert_domain_to_range( i_domain_name = 'MANDT' ).
+range_reference = zcl_data_tool_pre74=>convert_domain_to_range( i_domain_name = 'MANDT' ). "default SIGN = I, OPTION = EQ
 ASSIGN range_reference->* TO <range>.
 ```
 
