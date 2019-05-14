@@ -24,8 +24,8 @@ CLASS zcl_data_tool_pre74 DEFINITION PUBLIC CREATE PUBLIC.
       "! HIGH range field values</p>
       "! <p>Relevant if the line type of the internal table; the name of the structure field used for getting
       "! values for HIGH range component</p>
-      "! @parameter i_sign | <p class="shorttext synchronized" lang="en">SIGN field value in the created range</p>
-      "! @parameter i_option | <p class="shorttext synchronized" lang="en">OPTION field value in the created range</p>
+      "! @parameter i_sign | <p class="shorttext synchronized" lang="en">SIGN field value in the created range (default I)</p>
+      "! @parameter i_option | <p class="shorttext synchronized" lang="en">OPTION field value in the created range (default EQ)</p>
       "! @parameter r_range | <p class="shorttext synchronized" lang="en">A data reference to the created range</p>
       convert_int_table_to_range IMPORTING i_table          TYPE REF TO data
                                            i_low_fieldname  TYPE string OPTIONAL
@@ -33,6 +33,19 @@ CLASS zcl_data_tool_pre74 DEFINITION PUBLIC CREATE PUBLIC.
                                            i_sign           TYPE char1 DEFAULT 'I'
                                            i_option         TYPE char2 DEFAULT 'EQ'
                                  RETURNING VALUE(r_range)   TYPE REF TO data,
+      "! <p class="shorttext synchronized" lang="en">Converts a domain to a range</p>
+      "! <ul>Features:
+      "! <li>supports domains with fixed values and value tables</li>
+      "! <li>supported types: see documentation <em>convert_int_table_to_range</em></li>
+      "! </ul>
+      "! <p>Usage: pass a domain name or a reference to a data object with domain. The result range is
+      "! returned as a data reference.</p>
+      "! <p>Examples: see the local test class <em>lcl_test</em>.</p>
+      "! @parameter i_sign | <p class="shorttext synchronized" lang="en">SIGN field value in the created range (default I)</p>
+      "! @parameter i_option | <p class="shorttext synchronized" lang="en">OPTION field value in the created range (default EQ)</p>
+      "! @parameter i_domain_name | <p class="shorttext synchronized" lang="en">Domain name</p>
+      "! @parameter i_domain_reference | <p class="shorttext synchronized" lang="en">A reference to a data object with domain type</p>
+      "! @parameter r_range | <p class="shorttext synchronized" lang="en">A data reference to the created range</p>
       convert_domain_to_range IMPORTING i_sign             TYPE char1 DEFAULT 'I'
                                         i_option           TYPE char2 DEFAULT 'EQ'
                                         i_domain_name      TYPE domname OPTIONAL
@@ -141,8 +154,8 @@ CLASS zcl_data_tool_pre74 IMPLEMENTATION.
     DATA: domain_values           TYPE STANDARD TABLE OF dd07v,
           domain_type_description TYPE dd01v,
           domain_name             LIKE i_domain_name,
-          relative_name           TYPE string,
-          type_description        TYPE REF TO cl_abap_typedescr,
+          ddic_type               TYPE dfies,
+          element_description     TYPE REF TO cl_abap_elemdescr,
           range_line              TYPE REF TO data,
           components              TYPE abap_component_tab,
           structure_description   TYPE REF TO cl_abap_structdescr,
@@ -161,9 +174,9 @@ CLASS zcl_data_tool_pre74 IMPLEMENTATION.
     ENDIF.
 
     IF i_domain_reference IS NOT INITIAL.
-      type_description = cl_abap_datadescr=>describe_by_data_ref( p_data_ref = i_domain_reference ).
-      relative_name = type_description->get_relative_name( ).
-      domain_name = relative_name.
+      element_description ?= cl_abap_datadescr=>describe_by_data_ref( p_data_ref = i_domain_reference ).
+      ddic_type = element_description->get_ddic_field( ).
+      domain_name = ddic_type-domname.
     ELSE.
       domain_name = i_domain_name.
     ENDIF.

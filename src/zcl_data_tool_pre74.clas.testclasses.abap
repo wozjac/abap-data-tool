@@ -594,11 +594,14 @@ CLASS lcl_test IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD table_domain_ref_to_range.
-    DATA: domain     TYPE mandt,
-          domain_ref TYPE REF TO data,
-          range      TYPE REF TO data.
+    DATA: domain         TYPE bapimandt,
+          domain_ref     TYPE REF TO data,
+          range          TYPE REF TO data,
+          expected_range TYPE ty_mandt_range.
 
     FIELD-SYMBOLS: <range> TYPE STANDARD TABLE.
+
+    expected_range = get_mandt_range( ).
 
     GET  REFERENCE OF domain INTO domain_ref.
 
@@ -610,14 +613,15 @@ CLASS lcl_test IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_bound( act = range ).
     ASSIGN range->* TO <range>.
-
-
+    cl_abap_unit_assert=>assert_equals( act = <range> exp = expected_range ).
   ENDMETHOD.
 
   METHOD table_domain_name_to_range.
-    DATA: domain_name TYPE domname VALUE 'MANDT',
-          range       TYPE REF TO data.
+    DATA: domain_name    TYPE domname VALUE 'MANDT',
+          range          TYPE REF TO data,
+          expected_range TYPE ty_mandt_range.
 
+    expected_range = get_mandt_range( ).
     FIELD-SYMBOLS: <range> TYPE STANDARD TABLE.
 
     range = zcl_data_tool_pre74=>convert_domain_to_range(
