@@ -29,7 +29,8 @@ APPEND 2 TO int_table.
 APPEND 3 TO int_table.
 
 GET REFERENCE OF int_table INTO ref_table.
-ref_range = zcl_data_tool_pre74=>internal_table_to_range( i_table = ref_table ). "default SIGN = I, OPTION = EQ
+"default SIGN = I, OPTION = EQ
+ref_range = zcl_data_tool_pre74=>internal_table_to_range( i_table = ref_table ). 
 ASSIGN ref_range->* to <range>.
 ```  
 * structured table
