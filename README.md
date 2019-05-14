@@ -6,16 +6,18 @@ Various ABAP utilities.
 Both classes deliver the same functionality, but the former is for NW system version > 7.4 and has more expression-style usage, while the latter is dedicated for NW system version < 7.4. 
 #### Methods:
 ##### convert_int_table_to_range
-Converts an internal table to a range.  
+Converts an internal table to a range. 
+
 Features:
 - supports non- and structured line type
-- works for elementary types (or DDIC types based on): p, c, n, d, t, f, i, int8, string, decfloat16, decfloat34</li>  
+- works for elementary types (or DDIC types based on): p, c, n, d, t, f, i, int8, string, decfloat16, decfloat34  
 
 Usage:  
 The internal table has to be provided as data reference and the final range is returned as reference too.
 If the table is non-structured,*i_low_fieldname* and *i_high_fieldname* are not relevant. If the table is structured, at least one field name of the structure has to be provided.  
 Examples (ZCL_DATA_TOOL_PRE74): 
 * non-structured table
+
 ```ABAP
 DATA: int_table   TYPE STANDARD TABLE OF i,
       ref_table   TYPE REF TO data,
@@ -34,6 +36,7 @@ ref_range = zcl_data_tool_pre74=>internal_table_to_range( i_table = ref_table ).
 ASSIGN ref_range->* to <range>.
 ```  
 * structured table
+
 ```ABAP
 TYPES: BEGIN OF ty_data,
          name  TYPE string,
@@ -66,8 +69,17 @@ ref_range = zcl_data_tool_pre74=>internal_table_to_range(
 ASSIGN ref_range->* TO <range>.
 ```  
 ##### convert_domain_to_range
+Converts a domain (provided as a name or taken from a data object) to a range.  
+
+Features:
+* supports domains with fixed values and value tables
+* supported types: see documentation *convert_int_table_to_range*
+    
+Usage: pass a domain name or a reference to a data object with domain. The result range is returned as a data reference.
+
 Examples (ZCL_DATA_TOOL_PRE74):
 * passing a data object with a domain type
+
 ```ABAP
 DATA: bapiclient      TYPE bapimandt,
       range_reference TYPE REF TO data,
@@ -80,6 +92,7 @@ range_reference = zcl_data_tool_pre74=>convert_domain_to_range( i_domain_referen
 ASSIGN range_reference->* TO <range>.
 ```
 * passing domain name
+
 ```ABAP
 DATA: range_reference TYPE REF TO data,
       clients         TYPE RANGE OF bapimandt.
