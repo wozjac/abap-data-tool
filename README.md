@@ -14,7 +14,8 @@ Features:
 
 Usage:  
 The internal table has to be provided as data reference and the final range is returned as reference too.
-If the table is non-structured,*i_low_fieldname* and *i_high_fieldname* are not relevant. If the table is structured, at least one field name of the structure has to be provided.  
+If the table is non-structured,*i_low_fieldname* and *i_high_fieldname* are not relevant. If the table is structured, at least one field name of the structure has to be provided.
+
 Examples (ZCL_DATA_TOOL_PRE74): 
 * non-structured table
 
@@ -75,7 +76,8 @@ Features:
 * supports domains with fixed values and value tables
 * supported types: see documentation *convert_int_table_to_range*
     
-Usage: pass a domain name or a reference to a data object with domain. The result range is returned as a data reference.
+Usage:  
+pass a domain name or a reference to a data object with domain. The result range is returned as a data reference.
 
 Examples (ZCL_DATA_TOOL_PRE74):
 * passing a data object with a domain type
