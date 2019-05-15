@@ -1,6 +1,6 @@
 {
     "global": {
-        "version": "v753",
+        "version": "v751",
         "skipGeneratedGatewayClasses": true,
         "skipGeneratedPersistentClasses": true,
         "skipGeneratedFunctionGroups": true,
@@ -24,8 +24,8 @@
             "exclude": []
         },
         "check_variables": {
-            "enabled": false,
-            "exclude": []
+            "enabled": true,
+            "exclude": ["src/zcl_data_tool.clas.abap"]
         },
         "class_attribute_names": {
             "enabled": true,
@@ -63,7 +63,7 @@
             "exclude": []
         },
         "empty_line_in_statement": {
-            "enabled": true,
+            "enabled": false,
             "exclude": [],
             "allowChained": false
         },
@@ -136,7 +136,7 @@
         "local_class_naming": {
             "enabled": true,
             "exclude": [],
-            "local": "^LCL_.*$",
+            "local": "^LC[LX]_.*$",
             "test": "^LCL_.*$"
         },
         "local_variable_names": {
@@ -235,7 +235,7 @@
       ]
         },
         "remove_descriptions": {
-            "enabled": true,
+            "enabled": false,
             "exclude": [],
             "ignoreExceptions": true
         },
@@ -260,7 +260,7 @@
         },
         "superclass_final": {
             "enabled": true,
-            "exclude": []
+            "exclude": ["src/zcl_data_tool.clas.locals_def.abap"]
         },
         "tabl_enhancement_category": {
             "enabled": true,

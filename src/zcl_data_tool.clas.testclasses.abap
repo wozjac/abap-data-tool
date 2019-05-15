@@ -73,7 +73,7 @@ CLASS lcl_test IMPLEMENTATION.
     TYPES: ty_expected_range TYPE RANGE OF f,
            ty_table          TYPE STANDARD TABLE OF f WITH EMPTY KEY.
 
-    DATA(table) = VALUE ty_table( ( CONV #('1.20') ) ( CONV #('1.30') ) ( CONV #('1.40') ) ).
+    DATA(table) = VALUE ty_table( ( CONV #( '1.20' ) ) ( CONV #( '1.30' ) ) ( CONV #( '1.40' ) ) ).
 
     DATA(expected_range) = VALUE ty_expected_range(
       (
