@@ -25,7 +25,7 @@
         },
         "check_variables": {
             "enabled": true,
-            "exclude": ["src/zcl_data_tool.clas.abap"]
+            "exclude": ["src/zcl_data_tool.clas.abap", "src/zcl_data_tool.clas.locals_imp.abap", "src/zcl_data_tool_pre74.clas.locals_imp.abap"]
         },
         "class_attribute_names": {
             "enabled": true,
@@ -260,7 +260,7 @@
         },
         "superclass_final": {
             "enabled": true,
-            "exclude": ["src/zcl_data_tool.clas.locals_def.abap"]
+            "exclude": ["src/zcl_data_tool.clas.locals_def.abap", "src/zcl_data_tool_pre74.clas.locals_def.abap"]
         },
         "tabl_enhancement_category": {
             "enabled": true,

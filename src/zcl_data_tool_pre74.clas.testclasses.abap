@@ -621,8 +621,9 @@ CLASS lcl_test IMPLEMENTATION.
           range          TYPE REF TO data,
           expected_range TYPE ty_mandt_range.
 
-    expected_range = get_mandt_range( ).
     FIELD-SYMBOLS: <range> TYPE STANDARD TABLE.
+
+    expected_range = get_mandt_range( ).
 
     range = zcl_data_tool_pre74=>convert_domain_to_range(
       i_sign = 'I'

@@ -102,7 +102,7 @@ CLASS lcl_test IMPLEMENTATION.
     TYPES: ty_expected_range TYPE RANGE OF decfloat16,
            ty_table          TYPE STANDARD TABLE OF decfloat16 WITH EMPTY KEY.
 
-    DATA(table) = VALUE ty_table( ( CONV #('1.20') ) ( CONV #('1.30') ) ( CONV #('1.40') ) ).
+    DATA(table) = VALUE ty_table( ( CONV #( '1.20' ) ) ( CONV #( '1.30' ) ) ( CONV #( '1.40' ) ) ).
 
     DATA(expected_range) = VALUE ty_expected_range(
       (
@@ -128,9 +128,9 @@ CLASS lcl_test IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD char_table_to_range.
-    TYPES:ty_char           TYPE c LENGTH 3,
-          ty_expected_range TYPE RANGE OF ty_char,
-          ty_table          TYPE STANDARD TABLE OF ty_char WITH EMPTY KEY.
+    TYPES: ty_char           TYPE c LENGTH 3,
+           ty_expected_range TYPE RANGE OF ty_char,
+           ty_table          TYPE STANDARD TABLE OF ty_char WITH EMPTY KEY.
 
     DATA(table) = VALUE ty_table( ( 'abc' ) ( 'cba' ) ( 'abc' ) ).
 
@@ -161,7 +161,7 @@ CLASS lcl_test IMPLEMENTATION.
     TYPES: ty_expected_range TYPE RANGE OF decfloat34,
            ty_table          TYPE STANDARD TABLE OF decfloat34 WITH EMPTY KEY.
 
-    DATA(table) = VALUE ty_table( ( CONV #('1.20') ) ( CONV #('1.30') ) ( CONV #('1.40') ) ).
+    DATA(table) = VALUE ty_table( ( CONV #( '1.20' ) ) ( CONV #( '1.30' ) ) ( CONV #( '1.40' ) ) ).
 
     DATA(expected_range) = VALUE ty_expected_range(
       (
@@ -191,7 +191,7 @@ CLASS lcl_test IMPLEMENTATION.
            ty_table          TYPE STANDARD TABLE OF ty_packed WITH DEFAULT KEY,
            ty_expected_range TYPE RANGE OF ty_packed.
 
-    DATA(table) = VALUE ty_table( ( CONV #('111.20') ) ( CONV #('111.30') ) ( CONV #('111.40') ) ).
+    DATA(table) = VALUE ty_table( ( CONV #( '111.20' ) ) ( CONV #( '111.30' ) ) ( CONV #( '111.40' ) ) ).
 
     DATA(expected_range) = VALUE ty_expected_range(
       (
@@ -220,7 +220,7 @@ CLASS lcl_test IMPLEMENTATION.
     TYPES: ty_expected_range TYPE RANGE OF string,
            ty_table          TYPE STANDARD TABLE OF string WITH EMPTY KEY.
 
-    DATA(table) = VALUE ty_table( ( CONV #('abcc') ) ( CONV #('cbaa') ) ( CONV #('abcc') ) ).
+    DATA(table) = VALUE ty_table( ( CONV #( 'abcc' ) ) ( CONV #( 'cbaa' ) ) ( CONV #( 'abcc' ) ) ).
 
     DATA(expected_range) = VALUE ty_expected_range(
       (
@@ -250,7 +250,7 @@ CLASS lcl_test IMPLEMENTATION.
            ty_table          TYPE STANDARD TABLE OF ty_num WITH DEFAULT KEY,
            ty_expected_range TYPE RANGE OF ty_num.
 
-    DATA(table) = VALUE ty_table( ( CONV #('111') ) ( CONV #('112') ) ( CONV #('113') ) ).
+    DATA(table) = VALUE ty_table( ( CONV #( '111' ) ) ( CONV #( '112' ) ) ( CONV #( '113' ) ) ).
 
     DATA(expected_range) = VALUE ty_expected_range(
       (
