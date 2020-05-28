@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.com/wozjac/abap-data-tools.svg?branch=master)](https://travis-ci.com/wozjac/abap-data-tools)
-
 # ABAP Data Tools
 Various ABAP utilities.
 
