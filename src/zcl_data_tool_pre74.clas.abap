@@ -33,6 +33,7 @@ CLASS zcl_data_tool_pre74 DEFINITION PUBLIC CREATE PUBLIC.
                                            i_sign           TYPE char1 DEFAULT 'I'
                                            i_option         TYPE char2 DEFAULT 'EQ'
                                  RETURNING VALUE(r_range)   TYPE REF TO data,
+
       "! <p class="shorttext synchronized" lang="en">Converts a domain to a range</p>
       "! <ul>Features:
       "! <li>supports domains with fixed values and value tables</li>
@@ -61,19 +62,25 @@ CLASS zcl_data_tool_pre74 DEFINITION PUBLIC CREATE PUBLIC.
     CLASS-METHODS:
       create_low_high_components IMPORTING i_range_value_details TYPE ty_type_details
                                  RETURNING VALUE(r_components)   TYPE abap_component_tab,
+
       create_range_components IMPORTING i_range_value_details TYPE ty_type_details
                               RETURNING VALUE(r_components)   TYPE abap_component_tab,
+
       create_range_table IMPORTING i_structure_description TYPE REF TO cl_abap_structdescr
                          RETURNING VALUE(r_range_table)    TYPE REF TO data,
+
       get_type_details_from_element IMPORTING i_domain_name         TYPE domname
                                     RETURNING VALUE(r_type_details) TYPE ty_type_details,
+
       get_type_details_from_table IMPORTING i_table               TYPE REF TO data
                                             i_low_fieldname       TYPE string OPTIONAL
                                             i_high_fieldname      TYPE string OPTIONAL
                                   RETURNING VALUE(r_type_details) TYPE ty_type_details,
+
       get_value_table_field IMPORTING i_table_name       TYPE char30
                                       i_domain_name      TYPE domname
                             RETURNING VALUE(r_fieldname) TYPE string,
+
       get_value_table_values IMPORTING i_table_name  TYPE char30
                                        i_domain_name TYPE domname
                              EXPORTING e_values      TYPE ty_domain_values.
@@ -202,8 +209,7 @@ CLASS zcl_data_tool_pre74 IMPLEMENTATION.
         EXPORTING
           i_table_name = domain_type_description-entitytab
           i_domain_name = domain_name
-        IMPORTING e_values = domain_values
-      ).
+        IMPORTING e_values = domain_values ).
     ENDIF.
 
     type_details = get_type_details_from_element( i_domain_name = domain_name ).
@@ -261,13 +267,11 @@ CLASS zcl_data_tool_pre74 IMPLEMENTATION.
 
     is_given_type = cl_lcr_util=>instanceof(
       object = data_description
-      class = 'CL_ABAP_STRUCTDESCR'
-    ).
+      class = 'CL_ABAP_STRUCTDESCR' ).
 
     "line type structure
     IF is_given_type = abap_true.
-      IF i_low_fieldname IS INITIAL
-        AND i_high_fieldname IS INITIAL.
+      IF i_low_fieldname IS INITIAL AND i_high_fieldname IS INITIAL.
 
         RAISE EXCEPTION TYPE lcx_data_tool_exception.
       ENDIF.
@@ -297,8 +301,7 @@ CLASS zcl_data_tool_pre74 IMPLEMENTATION.
 
     is_given_type = cl_lcr_util=>instanceof(
       object = data_description
-      class = 'CL_ABAP_ELEMDESCR'
-    ).
+      class = 'CL_ABAP_ELEMDESCR' ).
 
     IF is_given_type = abap_true.
       element_description ?= data_description.
@@ -330,8 +333,7 @@ CLASS zcl_data_tool_pre74 IMPLEMENTATION.
     value_data_details = get_type_details_from_table(
         i_table = i_table
         i_low_fieldname = i_low_fieldname
-        i_high_fieldname = i_high_fieldname
-    ).
+        i_high_fieldname = i_high_fieldname ).
 
     components = create_range_components( i_range_value_details = value_data_details ).
     structure_description = cl_abap_structdescr=>create( components ).
@@ -402,9 +404,8 @@ CLASS zcl_data_tool_pre74 IMPLEMENTATION.
     FIELD-SYMBOLS: <value_low> LIKE LINE OF value_low_tab.
 
     field_name = get_value_table_field(
-        i_table_name = i_table_name
-        i_domain_name = i_domain_name
-      ).
+      i_table_name = i_table_name
+      i_domain_name = i_domain_name ).
 
     SELECT (field_name) FROM (i_table_name) INTO TABLE value_low_tab.
 
